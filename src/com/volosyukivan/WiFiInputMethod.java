@@ -69,7 +69,7 @@ public class WiFiInputMethod extends InputMethodService {
     super.onCreate();
     PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
     wakeLock = pm.newWakeLock(
-        PowerManager.SCREEN_BRIGHT_WAKE_LOCK | PowerManager.ON_AFTER_RELEASE, "wifikeyboard");
+        PowerManager.SCREEN_BRIGHT_WAKE_LOCK | PowerManager.ON_AFTER_RELEASE, "gossiper");
 //    Debug.d("WiFiInputMethod started");
     serviceConnection = new ServiceConnection() {
       //@Override

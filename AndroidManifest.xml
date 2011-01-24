@@ -23,7 +23,7 @@
 		</activity>
 
 		<!-- Declares the input method service -->
-		<service android:name="WiFiInputMethod" android:label="WiFiKeyboard"
+		<service android:name="WiFiInputMethod" android:label="Gossiper"
 			android:permission="android.permission.BIND_INPUT_METHOD">
 			<intent-filter>
 				<action android:name="android.view.InputMethod" />
@@ -32,7 +32,7 @@
 		</service>
 		<service android:name="HttpService" />
 
-		<receiver android:name=".WidgetProvider" android:label="WiFiKeyboard">
+		<receiver android:name=".WidgetProvider" android:label="Gossiper">
 			<intent-filter>
 				<action android:name="android.appwidget.action.APPWIDGET_UPDATE" />
 			</intent-filter>
