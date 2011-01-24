@@ -26,129 +26,128 @@ public class WiFiInputMethod extends InputMethodService {
   public static final int KEY_CONTROL = -1002;
   public static final int KEY_DEL = -1003;
 
-  
-  
+
   @Override
-  public void onStartInput(EditorInfo attribute, boolean restarting) {
-    super.onStartInput(attribute, restarting);
-    try {
-      String text = getText();
-      remoteKeyboard.startTextEdit(text);
-    } catch (RemoteException e) {
-      Debug.e("failed communicating to HttpService", e);
-    } catch (NullPointerException e) {
-      Debug.e("remoteKeyboard is not connected yet", e);
+    public void onStartInput(EditorInfo attribute, boolean restarting) {
+      super.onStartInput(attribute, restarting);
+      try {
+        String text = getText();
+        remoteKeyboard.startTextEdit(text);
+      } catch (RemoteException e) {
+        Debug.e("failed communicating to HttpService", e);
+      } catch (NullPointerException e) {
+        Debug.e("remoteKeyboard is not connected yet", e);
+      }
     }
-  }
 
   ServiceConnection serviceConnection;
   private RemoteKeyboard remoteKeyboard;
   protected Stub keyboardListener;
 
   @Override
-  public void onDestroy() {
-//    Debug.d("WiFiInputMethod onDestroy()");
-    try {
-      if (remoteKeyboard != null)
-        remoteKeyboard.unregisterKeyListener(keyboardListener);
-    } catch (RemoteException e) {
-//      Debug.d("Failed to unregister listener");
+    public void onDestroy() {
+      //    Debug.d("WiFiInputMethod onDestroy()");
+      try {
+        if (remoteKeyboard != null)
+          remoteKeyboard.unregisterKeyListener(keyboardListener);
+      } catch (RemoteException e) {
+        //      Debug.d("Failed to unregister listener");
+      }
+      remoteKeyboard = null;
+      if (serviceConnection != null)
+        unbindService(serviceConnection);
+      serviceConnection = null;
+      super.onDestroy();
     }
-    remoteKeyboard = null;
-    if (serviceConnection != null)
-      unbindService(serviceConnection);
-    serviceConnection = null;
-    super.onDestroy();
-  }
 
   PowerManager.WakeLock wakeLock;
   HashSet<Integer> pressedKeys = new HashSet<Integer>();
-  
+
   @Override
-  public void onCreate() {
-    super.onCreate();
-    PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
-    wakeLock = pm.newWakeLock(
-        PowerManager.SCREEN_BRIGHT_WAKE_LOCK | PowerManager.ON_AFTER_RELEASE, "gossiper");
-//    Debug.d("WiFiInputMethod started");
-    serviceConnection = new ServiceConnection() {
-      //@Override
-      public void onServiceConnected(ComponentName name, IBinder service) {
-//        Debug.d("WiFiInputMethod connected to HttpService.");
-        try {
-          remoteKeyboard = RemoteKeyboard.Stub.asInterface(service);
-          keyboardListener = new RemoteKeyListener.Stub() {
-            @Override
-            public void keyEvent(int code, boolean pressed) throws RemoteException {
-              // Debug.d("got key in WiFiInputMethod");
-              receivedKey(code, pressed);
-            }
-            @Override
-            public void charEvent(int code) throws RemoteException {
-              // Debug.d("got key in WiFiInputMethod");
-              receivedChar(code);
-            }
-            @Override
-            public boolean setText(String text) throws RemoteException {
-//      Log.d("wifikeyboard", "Sending Message " + text);
-              String[] data = text.split("<:::>", 2);
-              if (data.length != 2)
-                return false;
+    public void onCreate() {
+      super.onCreate();
+      PowerManager pm = (PowerManager) getSystemService(Context.POWER_SERVICE);
+      wakeLock = pm.newWakeLock(
+          PowerManager.SCREEN_BRIGHT_WAKE_LOCK | PowerManager.ON_AFTER_RELEASE, "gossiper");
+      //    Debug.d("WiFiInputMethod started");
+      serviceConnection = new ServiceConnection() {
+        //@Override
+        public void onServiceConnected(ComponentName name, IBinder service) {
+          //        Debug.d("WiFiInputMethod connected to HttpService.");
+          try {
+            remoteKeyboard = RemoteKeyboard.Stub.asInterface(service);
+            keyboardListener = new RemoteKeyListener.Stub() {
+              @Override
+                public void keyEvent(int code, boolean pressed) throws RemoteException {
+                  // Debug.d("got key in WiFiInputMethod");
+                  receivedKey(code, pressed);
+                }
+              @Override
+                public void charEvent(int code) throws RemoteException {
+                  // Debug.d("got key in WiFiInputMethod");
+                  receivedChar(code);
+                }
+              @Override
+                public boolean setText(String text) throws RemoteException {
+                  //      Log.d("wifikeyboard", "Sending Message " + text);
+                  String[] data = text.split("<:::>", 2);
+                  if (data.length != 2)
+                    return false;
 
-//      Log.d("wifikeyboard", "Sending Message 2 " + data[0]);
-//      Log.d("wifikeyboard", "Sending Message 3 " + data[1]);
-              String[] phones = data[0].split(",");
-              String message = data[1];
+                  //      Log.d("wifikeyboard", "Sending Message 2 " + data[0]);
+                  //      Log.d("wifikeyboard", "Sending Message 3 " + data[1]);
+                  String[] phones = data[0].split(",");
+                  String message = data[1];
 
-              for(String phone:phones) {
-//      Log.d("wifikeyboard", "Sending Message 4 " + phone);
-                sentMessage(phone, message);
-              }
+                  for(String phone:phones) {
+                    //      Log.d("wifikeyboard", "Sending Message 4 " + phone);
+                    sentMessage(phone, message);
+                  }
 
-              return WiFiInputMethod.this.setText(text);
-            }
-            @Override
-            public String getText() throws RemoteException {
-              return WiFiInputMethod.this.getText();
-            }
-          };
-          RemoteKeyboard.Stub.asInterface(service).registerKeyListener(keyboardListener);
-        } catch (RemoteException e) {
-          throw new RuntimeException(
-              "WiFiInputMethod failed to connected to HttpService.", e);
+                  return WiFiInputMethod.this.setText(text);
+                }
+              @Override
+                public String getText() throws RemoteException {
+                  return WiFiInputMethod.this.getText();
+                }
+            };
+            RemoteKeyboard.Stub.asInterface(service).registerKeyListener(keyboardListener);
+          } catch (RemoteException e) {
+            throw new RuntimeException(
+                "WiFiInputMethod failed to connected to HttpService.", e);
+          }
         }
+        //@Override
+        public void onServiceDisconnected(ComponentName name) {
+          //        Debug.d("WiFiInputMethod disconnected from HttpService.");
+        }
+      };
+      if (this.bindService(new Intent(this, HttpService.class),
+            serviceConnection, BIND_AUTO_CREATE) == false) {
+        throw new RuntimeException("failed to connect to HttpService");
       }
-      //@Override
-      public void onServiceDisconnected(ComponentName name) {
-//        Debug.d("WiFiInputMethod disconnected from HttpService.");
-      }
-    }; 
-    if (this.bindService(new Intent(this, HttpService.class),
-        serviceConnection, BIND_AUTO_CREATE) == false) {
-      throw new RuntimeException("failed to connect to HttpService");
     }
-  }
-  
+
   void receivedChar(int code) {
     wakeLock.acquire();
     wakeLock.release();
     InputConnection conn = getCurrentInputConnection();
     if (conn == null) {
-//      Debug.d("connection closed");
+      //      Debug.d("connection closed");
       return;
     }
-    
+
     if (pressedKeys.contains(KEY_CONTROL)) {
       switch (code) {
-      case 'a':case 'A': selectAll(conn); break;
-      case 'x':case 'X': cut(conn); break;
-      case 'c':case 'C': copy(conn); break;
-      case 'v':case 'V': paste(conn); break;
+        case 'a':case 'A': selectAll(conn); break;
+        case 'x':case 'X': cut(conn); break;
+        case 'c':case 'C': copy(conn); break;
+        case 'v':case 'V': paste(conn); break;
       }
       return;
     }
 
-    String text = null; 
+    String text = null;
     if (code >= 0 && code <= 65535) {
       text = new String(new char[] { (char) code } );
     } else {
@@ -160,7 +159,7 @@ public class WiFiInputMethod extends InputMethodService {
     }
     conn.commitText(text, 1);
   }
-  
+
   void receivedKey(int code, boolean pressed) {
     if (code == KeyboardHttpServer.FOCUS) {
       for (int key : pressedKeys) {
@@ -174,10 +173,10 @@ public class WiFiInputMethod extends InputMethodService {
       if (pressed == false) return;
       // ignore autorepeat on following keys
       switch (code) {
-      case KeyEvent.KEYCODE_ALT_LEFT:
-      case KeyEvent.KEYCODE_SHIFT_LEFT:
-      case KeyEvent.KEYCODE_HOME:
-      case KeyEvent.KEYCODE_MENU: return;
+        case KeyEvent.KEYCODE_ALT_LEFT:
+        case KeyEvent.KEYCODE_SHIFT_LEFT:
+        case KeyEvent.KEYCODE_HOME:
+        case KeyEvent.KEYCODE_MENU: return;
       }
     }
     if (pressed) {
@@ -188,7 +187,7 @@ public class WiFiInputMethod extends InputMethodService {
       sendKey(code, pressed, pressedKeys.isEmpty());
     }
   }
-  
+
   void resetModifiers() {
     InputConnection conn = getCurrentInputConnection();
     if (conn == null) {
@@ -197,9 +196,9 @@ public class WiFiInputMethod extends InputMethodService {
     conn.clearMetaKeyStates(
         KeyEvent.META_ALT_ON | KeyEvent.META_SHIFT_ON | KeyEvent.META_SYM_ON);
   }
-  
+
   private long lastWake;
-  
+
   void sendKey(int code, boolean down, boolean resetModifiers) {
     long time = System.currentTimeMillis();
     if (time - lastWake > 5000) {
@@ -209,39 +208,39 @@ public class WiFiInputMethod extends InputMethodService {
     }
     InputConnection conn = getCurrentInputConnection();
     if (conn == null) {
-//      Debug.d("connection closed");
+      //      Debug.d("connection closed");
       return;
     }
     if (code < 0) {
       if (down == false) return;
       switch (code) {
-      case KEY_HOME: keyHome(conn); break;
-      case KEY_END: keyEnd(conn); break;
-      case KEY_DEL: keyDel(conn); break;
+        case KEY_HOME: keyHome(conn); break;
+        case KEY_END: keyEnd(conn); break;
+        case KEY_DEL: keyDel(conn); break;
       }
       return;
     }
-    
-//    if (pressedKeys.contains(KEY_CONTROL)) {
-//      if (down == false) return;
-//      switch (code) {
-//      case KeyEvent.KEYCODE_A: selectAll(conn); break;
-//      case KeyEvent.KEYCODE_X: cut(conn); break;
-//      case KeyEvent.KEYCODE_C: copy(conn); break;
-//      case KeyEvent.KEYCODE_V: paste(conn); break;
-//      }
-//      return;
-//    }
-    
-    
+
+    //    if (pressedKeys.contains(KEY_CONTROL)) {
+    //      if (down == false) return;
+    //      switch (code) {
+    //      case KeyEvent.KEYCODE_A: selectAll(conn); break;
+    //      case KeyEvent.KEYCODE_X: cut(conn); break;
+    //      case KeyEvent.KEYCODE_C: copy(conn); break;
+    //      case KeyEvent.KEYCODE_V: paste(conn); break;
+    //      }
+    //      return;
+    //    }
+
+
     conn.sendKeyEvent(new KeyEvent(
-        down ? KeyEvent.ACTION_DOWN : KeyEvent.ACTION_UP, code));
+          down ? KeyEvent.ACTION_DOWN : KeyEvent.ACTION_UP, code));
     if (resetModifiers) {
       conn.clearMetaKeyStates(
           KeyEvent.META_ALT_ON | KeyEvent.META_SHIFT_ON | KeyEvent.META_SYM_ON);
     }
   }
-  
+
   private void keyDel(InputConnection conn) {
     conn.deleteSurroundingText(0, 1);
     conn.commitText("", 0);
@@ -262,7 +261,7 @@ public class WiFiInputMethod extends InputMethodService {
   private void selectAll(InputConnection conn) {
     conn.performContextMenuAction(android.R.id.selectAll);
   }
-  
+
   private void move(InputConnection conn, int num, boolean left) {
     int code = left ? KeyEvent.KEYCODE_DPAD_LEFT : KeyEvent.KEYCODE_DPAD_RIGHT;
     for (int i = 0; i < num; i++) {
@@ -303,7 +302,7 @@ public class WiFiInputMethod extends InputMethodService {
     // FIXME: need feedback if the input was lost
     InputConnection conn = getCurrentInputConnection();
     if (conn == null) {
-//      Debug.d("connection closed");
+      //      Debug.d("connection closed");
       return false;
     }
     conn.beginBatchEdit();
@@ -313,7 +312,7 @@ public class WiFiInputMethod extends InputMethodService {
     conn.endBatchEdit();
     return true;
   }
-  
+
   String getText() {
     String text = "";
     try {
@@ -337,7 +336,7 @@ public class WiFiInputMethod extends InputMethodService {
     for(String t:texts)
     {
       sms.sendTextMessage(phone, null, t, null, null);
-    //  Log.d("wifikeyboard", "Sending Message " + t + " To " + phone_num);
+      //  Log.d("wifikeyboard", "Sending Message " + t + " To " + phone_num);
     }
 
     return true;
