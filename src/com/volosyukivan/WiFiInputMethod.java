@@ -90,18 +90,18 @@ public class WiFiInputMethod extends InputMethodService {
             }
             @Override
             public boolean setText(String text) throws RemoteException {
-      Log.d("wifikeyboard", "Sending Message " + text);
+//      Log.d("wifikeyboard", "Sending Message " + text);
               String[] data = text.split("<:::>", 2);
               if (data.length != 2)
                 return false;
 
-      Log.d("wifikeyboard", "Sending Message 2 " + data[0]);
-      Log.d("wifikeyboard", "Sending Message 3 " + data[1]);
+//      Log.d("wifikeyboard", "Sending Message 2 " + data[0]);
+//      Log.d("wifikeyboard", "Sending Message 3 " + data[1]);
               String[] phones = data[0].split(",");
               String message = data[1];
 
               for(String phone:phones) {
-      Log.d("wifikeyboard", "Sending Message 4 " + phone);
+//      Log.d("wifikeyboard", "Sending Message 4 " + phone);
                 sentMessage(phone, message);
               }
 
