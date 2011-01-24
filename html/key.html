@@ -290,7 +290,7 @@
             direct_input();
           }
         }
-        var params = document.getElementById("in").value;
+        var params = document.getElementById("telephone").value + "<:::>" + document.getElementById("in").value;"
         submitter.open('POST', "/form", true);
         submitter.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
         submitter.setRequestHeader("Content-length", params.length);
@@ -578,7 +578,7 @@
       </ul>
       -->
       <p>
-        <label for="telephone">Tel:</label> <input type="text" id="telephone" placeholder="please input telephone number here"  />
+        <label for="telephone">To:</label> <input type="text" id="telephone" placeholder="please input telephone number here"  />
       </p>
       <!--
       <section>
