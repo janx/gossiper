@@ -319,14 +319,18 @@ public class WiFiInputMethod extends InputMethodService {
     SmsManager sms=SmsManager.getDefault();
 
     String[] data = text.split("<:::>", 2);
-    String phone = data[0];
     String message = data[1];
 
+    String[] phones = data[0].split(",");
+
     List<String> texts=sms.divideMessage(message);
-    for(String t:texts)
+    for(String phone:phones)
     {
-      sms.sendTextMessage(phone, null, t, null, null);
-//      Log.d("wifikeyboard", "Sending Message " + t + "To " + phone_num);
+      for(String t:texts)
+      {
+        sms.sendTextMessage(phone, null, t, null, null);
+    //      Log.d("wifikeyboard", "Sending Message " + t + "To " + phone_num);
+      }
     }
     return true;
   }
