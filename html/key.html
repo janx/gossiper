@@ -470,7 +470,7 @@
       button {
         display: inline-block;
         vertical-align: baseline;
-        margin: 0 2px;
+        margin: 4px 0 0 0;
         outline: none;
         cursor: pointer;
         text-align: center;
@@ -517,9 +517,43 @@
       background: -webkit-gradient(linear, left top, left bottom, from(#faa51a), to(#f47a20));
       background: -moz-linear-gradient(top,  #faa51a,  #f47a20);
       }
-
+      
+      #contact_list{
+        margin:5px 0;
+      }
+      #contact_list li,#contact_list li a{
+        display:inline-block;
+        color:#666;
+      }
+      #contact_list li a{
+        padding:2px 4px;
+        -moz-border-radius:2px 0 0 2px;
+        -webkit-border-radius:2px 0 0 2px;
+        border-radius:2px 0 0 2px;
+        background-color:#ddd;
+        font-size:12px;
+      }
+      #contact_list li a.current{
+        background-color:#FF8400;
+        color:#fff;
+      }
+      #contact_list li a.all{
+        -moz-border-radius:2px;
+        -webkit-border-radius:2px;
+        border-radius:2px;
+      }
+      
+      #contact_list li a.close{
+        padding:2px 4px;
+        -moz-border-radius:0 2px 2px 0;
+        -webkit-border-radius:0 2px 2px 0;
+        border-radius:0 2px 2px 0;
+        background-color:#ddd;
+        font-size:12px;
+        border-left:#ccc 1px solid;
+      }
+      
     </style>
-    <link rel="icon" type="image/png" href="/icon.png" />
   </head>
   <body>
     <div id="page_container">
@@ -532,8 +566,16 @@
         <a href="javascript:;">other</a>
       </div>
       <article>
+        <ul id="contact_list">
+          <li><a href="javascript:;" class="all">全部</a></li>
+          <li><a href="javascript:;" class="current">柱子1</a><a href="javascript:;" class="close">X</a></li>
+          <li><a href="javascript:;">柱子2</a><a href="javascript:;" class="close">X</a></li>
+          <li><a href="javascript:;">柱子3</a><a href="javascript:;" class="close">X</a></li>
+          <li><a href="javascript:;">柱子4</a><a href="javascript:;" class="close">X</a></li>
+          <li><a href="javascript:;">柱子5</a><a href="javascript:;" class="close">X</a></li>
+        </ul>
       <p>
-        <label for="telephone">Tel:</label> <input type="tel" id="telephone" placeholder="please input telephone number here"  />
+        <label for="telephone">Tel:</label> <input type="text" id="telephone" placeholder="please input telephone number here"  />
       </p>
       <section>
       <ul>
@@ -542,7 +584,7 @@
       </ul>
       </section>
       <p>
-        <label for="message">Message: </label><textarea id="message" ></textarea>
+        <label for="message">Message: </label><textarea id="text" name="message" ></textarea>
       </p>
 
       <p>
