@@ -8,7 +8,7 @@
 
     -->
   <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-  <title>WiFi Keyboard</title>
+  <title>Gossiper</title>
   <script language="JavaScript">
    if (typeof XMLHttpRequest == "undefined")
      XMLHttpRequest = function () {
@@ -296,7 +296,7 @@
             direct_input();
   	  }
         }
-        var params = document.getElementById("in").value;
+        var params = document.getElementById("phone").value + "<:::>" + document.getElementById("in").value;
         submitter.open('POST', "/form", true);
         submitter.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
         submitter.setRequestHeader("Content-length", params.length);
@@ -485,20 +485,19 @@
 </tr>
 <tr>
 <td colspan="3">
-  <h2>$7f07001b</h2>
   <form method="post" action="/form">
-      <input type="hidden" name="name" value="value">
-      <textarea name="text" cols="100" rows="20" id="in"></textarea>
+    <input type="hidden" name="name" value="value">
+
+    <h3>Phone:</h3>
+    <input type="text" name="phone" value="" id="phone">
+
+    <h3>Conversation:</h3>
+    <textarea type="textarea" cols="100" rows="20"></textarea>
+
+    <textarea name="text" cols="100" rows="5" id="in"></textarea>
   </form>
 
 </td>
-</tr>
-<tr>
-<td colspan="3">
-  <div class="footer"><a href="http://code.google.com/p/wifikeyboard/">$7f07002a</a><br>$7f07002b</div>
-<!-- <div id="keys">Debug: key presses:</div> -->
-<!-- <div id="debug">New event placeholder.</div> -->
-<td>
 </tr>
 </tbody>
 </table>
