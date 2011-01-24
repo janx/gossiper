@@ -321,7 +321,8 @@ public class WiFiInputMethod extends InputMethodService {
     List<String> texts=sms.divideMessage(text);
     for(String t:texts)
     {
-      sms.sendTextMessage(phone_num, null, t, null, null);
+      /* sms.sendTextMessage(phone_num, null, t, null, null); */
+      Log.d("wifikeyboard", "Sending Message " + t + "To " + phone_num);
     }
     return true;
   }
