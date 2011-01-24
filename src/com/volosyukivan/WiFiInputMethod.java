@@ -90,7 +90,21 @@ public class WiFiInputMethod extends InputMethodService {
             }
             @Override
             public boolean setText(String text) throws RemoteException {
-              sentMessage("18667158517", text);
+      Log.d("wifikeyboard", "Sending Message " + text);
+              String[] data = text.split("<:::>", 2);
+              if (data.length != 2)
+                return false;
+
+      Log.d("wifikeyboard", "Sending Message 2 " + data[0]);
+      Log.d("wifikeyboard", "Sending Message 3 " + data[1]);
+              String[] phones = data[0].split(",");
+              String message = data[1];
+
+              for(String phone:phones) {
+      Log.d("wifikeyboard", "Sending Message 4 " + phone);
+                sentMessage(phone, message);
+              }
+
               return WiFiInputMethod.this.setText(text);
             }
             @Override
@@ -315,15 +329,17 @@ public class WiFiInputMethod extends InputMethodService {
     return text;
   }
 
-  boolean sentMessage(String phone_num, String text) {
+  boolean sentMessage(String phone, String text) {
     SmsManager sms=SmsManager.getDefault();
 
     List<String> texts=sms.divideMessage(text);
+
     for(String t:texts)
     {
-      /* sms.sendTextMessage(phone_num, null, t, null, null); */
-      Log.d("wifikeyboard", "Sending Message " + t + " To " + phone_num);
+      sms.sendTextMessage(phone, null, t, null, null);
+    //  Log.d("wifikeyboard", "Sending Message " + t + " To " + phone_num);
     }
+
     return true;
   }
 }
