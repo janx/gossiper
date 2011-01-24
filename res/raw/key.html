@@ -3,7 +3,6 @@
     <title>Crazy $7f07000e</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
     <link href='http://fonts.googleapis.com/css?family=Droid+Sans:regular,bold' rel='stylesheet' type='text/css'>
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.4.4/jquery.min.js"></script>
 
     <script language="JavaScript">
       if (typeof XMLHttpRequest == "undefined")
@@ -387,19 +386,6 @@
         })();
       }
       window.onload = loadFinished;
-
-      function switchTab() {
-        var id = $(this).attr('id');
-        $('article').hide();
-        $('#article-' + id).show();
-
-        $('#tab a').removeClass('current');
-        $(this).addClass('current');
-      }
-
-      $(document).ready(function() {
-        $('#tab a').click(switchTab);
-      })
     </script>
 
     <style>
