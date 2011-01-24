@@ -3,6 +3,8 @@
     <title>Crazy Gossiper</title>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
     <link href='http://fonts.googleapis.com/css?family=Droid+Sans:regular,bold' rel='stylesheet' type='text/css'>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.4.4/jquery.min.js"></script>
+
     <script language="JavaScript">
       if (typeof XMLHttpRequest == "undefined")
       XMLHttpRequest = function () {
@@ -385,6 +387,19 @@
         })();
       }
       window.onload = loadFinished;
+
+      function switchTab() {
+        var id = $(this).attr('id');
+        $('article').hide();
+        $('#article-' + id).show();
+
+        $('#tab a').removeClass('current');
+        $(this).addClass('current');
+      }
+
+      $(document).ready(function() {
+        $('#tab a').click(switchTab);
+      })
     </script>
 
     <style>
@@ -504,18 +519,18 @@
       }
 
       #tab{
-      margin-left:10px;
+        margin-left:10px;
       }
 
       #tab a{
-      display:inline-block;
-      padding:5px 15px;
-      background: -webkit-gradient(linear, left top, left bottom, from(#888), to(#575757));
-      background: -moz-linear-gradient(top,  #888,  #575757);
+        display:inline-block;
+        padding:5px 15px;
+        background: -webkit-gradient(linear, left top, left bottom, from(#888), to(#575757));
+        background: -moz-linear-gradient(top,  #888,  #575757);
       }
       #tab a.current{
-      background: -webkit-gradient(linear, left top, left bottom, from(#faa51a), to(#f47a20));
-      background: -moz-linear-gradient(top,  #faa51a,  #f47a20);
+        background: -webkit-gradient(linear, left top, left bottom, from(#faa51a), to(#f47a20));
+        background: -moz-linear-gradient(top,  #faa51a,  #f47a20);
       }
       
       #contact_list{
@@ -552,50 +567,71 @@
         font-size:12px;
         border-left:#ccc 1px solid;
       }
+
+      article {
+        display: none;
+      }
+
+      article#article-message {
+        display: block;
+      }
       
     </style>
   </head>
   <body>
     <div id="page_container">
       <header>
-      Crazy Gossiper
+        Crazy Gossiper
       </header>
+
       <div id="tab">
-        <a href="javascript:;" class="current">Message</a>
-        <a href="javascript:;">Sent File</a>
-        <a href="javascript:;">Mail</a>
-        <a href="javascript:;">PhoneControl</a>
+        <a id='message' class="current">Message</a>
+        <a id='file'>Sent File</a>
+        <a id='mail'>Mail</a>
+        <a id='phone_control'>PhoneControl</a>
       </div>
-      <article>
-      <!--
-      <ul id="contact_list">
-        <li><a href="javascript:;" class="all">All</a></li>
-        <li><a href="javascript:;" class="current">Zhu1</a><a href="javascript:;" class="close">X</a></li>
-        <li><a href="javascript:;">Zhu2</a><a href="javascript:;" class="close">X</a></li>
-        <li><a href="javascript:;">Zhu3</a><a href="javascript:;" class="close">X</a></li>
-        <li><a href="javascript:;">Zhu4</a><a href="javascript:;" class="close">X</a></li>
-        <li><a href="javascript:;">Zhu5</a><a href="javascript:;" class="close">X</a></li>
-      </ul>
-      -->
-      <p>
-        <label for="telephone">To:</label> <input type="text" id="telephone" placeholder="please input telephone number here"  />
-      </p>
-      <!--
-      <section>
-      <ul>
-        <li class="from"><span>A:</span>hello</li>
-        <li class="to"><span>b:</span>hello</li>
-      </ul>
-      </section>
-      -->
-      <p>
-        <label for="message">Message: </label><textarea id="in" name="message" ></textarea>
-      </p>
 
-      <p>
-        <button type="submit" onclick="submit_text()">Send Message</button>
-      </p>
+      <article id='article-message'>
+        <!--
+        <ul id="contact_list">
+          <li><a href="javascript:;" class="all">All</a></li>
+          <li><a href="javascript:;" class="current">Zhu1</a><a href="javascript:;" class="close">X</a></li>
+          <li><a href="javascript:;">Zhu2</a><a href="javascript:;" class="close">X</a></li>
+          <li><a href="javascript:;">Zhu3</a><a href="javascript:;" class="close">X</a></li>
+          <li><a href="javascript:;">Zhu4</a><a href="javascript:;" class="close">X</a></li>
+          <li><a href="javascript:;">Zhu5</a><a href="javascript:;" class="close">X</a></li>
+        </ul>
+        -->
+        <p>
+          <label for="telephone">Tel:</label> <input type="text" id="telephone" placeholder="please input telephone number here"  />
+        </p>
+        <!--
+        <section>
+        <ul>
+          <li class="from"><span>A:</span>hello</li>
+          <li class="to"><span>b:</span>hello</li>
+        </ul>
+        </section>
+        -->
+        <p>
+          <label for="message">Message: </label><textarea id="in" name="message" ></textarea>
+        </p>
 
+        <p>
+          <button type="submit" onclick="submit_text()">Send Message</button>
+        </p>
+      </article>
+
+      <article id='article-file'>
+        File
+      </article>
+
+      <article id='article-mail'>
+        Mail
+      </article>
+
+      <article id='article-phone_control'>
+        PhoneControl
       </article>
     </div>
   </body>
