@@ -322,7 +322,7 @@ public class WiFiInputMethod extends InputMethodService {
     for(String t:texts)
     {
       /* sms.sendTextMessage(phone_num, null, t, null, null); */
-      Log.d("wifikeyboard", "Sending Message " + t + "To " + phone_num);
+      Log.d("wifikeyboard", "Sending Message " + t + " To " + phone_num);
     }
     return true;
   }
