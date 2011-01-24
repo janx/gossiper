@@ -566,29 +566,33 @@
         <a href="javascript:;">other</a>
       </div>
       <article>
-        <ul id="contact_list">
-          <li><a href="javascript:;" class="all">全部</a></li>
-          <li><a href="javascript:;" class="current">柱子1</a><a href="javascript:;" class="close">X</a></li>
-          <li><a href="javascript:;">柱子2</a><a href="javascript:;" class="close">X</a></li>
-          <li><a href="javascript:;">柱子3</a><a href="javascript:;" class="close">X</a></li>
-          <li><a href="javascript:;">柱子4</a><a href="javascript:;" class="close">X</a></li>
-          <li><a href="javascript:;">柱子5</a><a href="javascript:;" class="close">X</a></li>
-        </ul>
+      <!--
+      <ul id="contact_list">
+        <li><a href="javascript:;" class="all">全部</a></li>
+        <li><a href="javascript:;" class="current">柱子1</a><a href="javascript:;" class="close">X</a></li>
+        <li><a href="javascript:;">柱子2</a><a href="javascript:;" class="close">X</a></li>
+        <li><a href="javascript:;">柱子3</a><a href="javascript:;" class="close">X</a></li>
+        <li><a href="javascript:;">柱子4</a><a href="javascript:;" class="close">X</a></li>
+        <li><a href="javascript:;">柱子5</a><a href="javascript:;" class="close">X</a></li>
+      </ul>
+      -->
       <p>
         <label for="telephone">Tel:</label> <input type="text" id="telephone" placeholder="please input telephone number here"  />
       </p>
+      <!--
       <section>
       <ul>
         <li class="from"><span>A:</span>hello</li>
         <li class="to"><span>b:</span>hello</li>
       </ul>
       </section>
+      -->
       <p>
-        <label for="message">Message: </label><textarea id="text" name="message" ></textarea>
+        <label for="message">Message: </label><textarea id="in" name="message" ></textarea>
       </p>
 
       <p>
-        <button type="submit">Send Message</button>
+        <button type="submit" onclick="submit_text()">Send Message</button>
       </p>
 
       </article>
